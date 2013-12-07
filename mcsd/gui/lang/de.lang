@@ -1,0 +1,6 @@
+#Sat Dec 07 19:40:53 CET 2013
+labels.hexpath=Path to the Intel-HEX (.hex) file\:
+button.open=Open file
+label.source=Contents of the sourcefile\:
+button.save=Save decompiled program
+label.decompCode=Decompiled Code\:
