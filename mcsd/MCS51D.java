@@ -9,7 +9,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import mcsd.gui.MCSDUserInterface;
+import mcsd.gui.LanguageSelectionDialog;
 import mcsd.gui.lang.LanguageFile;
 import mcsd.instruction.MCSInstruction;
 
@@ -24,20 +24,18 @@ public class MCS51D {
 		}
 		//Load language Files
 		InputStream lfs = ClassLoader.getSystemResourceAsStream("mcsd/gui/lang/langfiles");
-		ArrayList<LanguageFile> languageFiles = new ArrayList<>();
+		final ArrayList<LanguageFile> languageFiles = new ArrayList<>();
 		Scanner scn = new Scanner(lfs);
 		while(scn.hasNextLine()) {
 			String path = scn.nextLine();
-			languageFiles.add(LanguageFile.readLangFile(ClassLoader.getSystemResourceAsStream(path),path.replace("mcd/gui/lang/", "")));
+			languageFiles.add(LanguageFile.readLangFile(ClassLoader.getSystemResourceAsStream(path),path.replace("mcsd/gui/lang/", "")));
 		}
 		//Show the Language Selection Dialog
-		
-		//Load the Main GUI
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				MCSDUserInterface ui = new MCSDUserInterface(MCSInstruction.INSTRUCTION_MAP);
-				ui.setVisible(true);
+				LanguageSelectionDialog dialog = new LanguageSelectionDialog(MCSInstruction.INSTRUCTION_MAP, languageFiles);
+				dialog.setVisible(true);
 			}
 		});
 	}

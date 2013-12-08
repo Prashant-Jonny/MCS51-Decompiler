@@ -21,6 +21,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 
 import mcsd.decompiler.MCSDecompiler;
+import mcsd.gui.lang.LanguageFile;
 import mcsd.hex.HEXFile;
 import mcsd.instruction.MCSInstruction;
 
@@ -30,13 +31,15 @@ public class MCSDUserInterface extends JFrame {
 	
 	private Map<Integer, MCSInstruction> instructions;
 	private HEXFile loadedHEX = null;
+	private LanguageFile lnf;
 	private MCSDecompiler decompiler = new MCSDecompiler(MCSInstruction.INSTRUCTION_MAP);
 	private JTextField pathTextField;
 	private JTextArea inputTextArea;
 	private JTextArea decompTextArea;
 	private JButton saveButton;
 
-	public MCSDUserInterface(Map<Integer, MCSInstruction> inst) {
+	public MCSDUserInterface(Map<Integer, MCSInstruction> inst, LanguageFile l) {
+		this.lnf = l;
 		setResizable(false);
 		this.instructions = inst;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,7 +56,7 @@ public class MCSDUserInterface extends JFrame {
 		contentPane.add(pathTextField);
 		pathTextField.setColumns(10);
 		
-		JButton searchButton = new JButton("Durchsuchen");
+		JButton searchButton = new JButton(l.getSearchButtonText());
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				loadHexFile();
@@ -62,19 +65,19 @@ public class MCSDUserInterface extends JFrame {
 		searchButton.setBounds(469, 26, 115, 29);
 		contentPane.add(searchButton);
 		
-		JLabel lblPfadZurIntel = new JLabel("Pfad zur Intel HEX Datei");
-		lblPfadZurIntel.setBounds(10, 11, 141, 14);
+		JLabel lblPfadZurIntel = new JLabel(l.getPathLabelText());
+		lblPfadZurIntel.setBounds(10, 11, 200, 14);
 		contentPane.add(lblPfadZurIntel);
 		
-		JLabel lblUrsprungsdaten = new JLabel("Ursprungsdaten: ");
-		lblUrsprungsdaten.setBounds(10, 58, 115, 14);
+		JLabel lblUrsprungsdaten = new JLabel(l.getSourceDataLabelText());
+		lblUrsprungsdaten.setBounds(10, 58, 200, 14);
 		contentPane.add(lblUrsprungsdaten);
 		
-		JLabel lblDekompilierterProgrammcode = new JLabel("Dekompilierter Programmcode:");
-		lblDekompilierterProgrammcode.setBounds(10, 227, 183, 16);
+		JLabel lblDekompilierterProgrammcode = new JLabel(l.getDecompDataLabelText());
+		lblDekompilierterProgrammcode.setBounds(10, 227, 200, 16);
 		contentPane.add(lblDekompilierterProgrammcode);
 		
-		saveButton = new JButton("Assembler Datei Speichern");
+		saveButton = new JButton(l.getSaveButtonText());
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				saveAsm();
@@ -99,13 +102,14 @@ public class MCSDUserInterface extends JFrame {
 		decompTextArea = new JTextArea();
 		scrollPane_1.setViewportView(decompTextArea);
 		decompTextArea.setEditable(false);
+		setTitle("MCS51-Decompiler Version 1.0 by HALive (C) 2013");
 	}
 	private void loadHexFile() {
 		JFileChooser chooser = new JFileChooser();
-		chooser.addChoosableFileFilter(new FileFilter() {
+		chooser.setFileFilter(new FileFilter() {
 			@Override
 			public String getDescription() {
-				return "Intel HEX Dateien (*.hex)";
+				return lnf.getFileChooserHEXFilter();
 			}
 			@Override
 			public boolean accept(File f) {
@@ -125,20 +129,30 @@ public class MCSDUserInterface extends JFrame {
 				this.saveButton.setEnabled(true);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, "Fehler beim laden der Datei!");
+				JOptionPane.showMessageDialog(this, lnf.getDialogErrLoad());
 				return;
 			}
 		}
 	}
 	private void saveAsm() {
 		JFileChooser chooser = new JFileChooser();
+		chooser.setFileFilter(new FileFilter() {
+			@Override
+			public String getDescription() {
+				return lnf.getFileChooserHEXFilter();
+			}
+			@Override
+			public boolean accept(File f) {
+				return f.isDirectory() || f.toString().endsWith(".hex") || f.toString().endsWith(".HEX");
+			}
+		});
 		if(chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File f = chooser.getSelectedFile();
 			try {
 				decompTextArea.write(new FileWriter(f));
 			} catch (IOException e) {
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, "Fehler beim speichern der Datei!");
+				JOptionPane.showMessageDialog(this, lnf.getDialogErrSave());
 				return;
 			}
 		}

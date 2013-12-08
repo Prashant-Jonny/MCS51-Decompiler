@@ -1,6 +1,9 @@
 #Sat Dec 07 19:40:53 CET 2013
-labels.hexpath=Path to the Intel-HEX (.hex) file\:
-button.open=Open file
-label.source=Contents of the sourcefile\:
-button.save=Save decompiled program
-label.decompCode=Decompiled Code\:
+labels.hexpath=Pfad zur Intel-HEX Datei\:
+button.open=Durchsuchen
+label.source=Inhalt der Quelldatei\:
+button.save=Dekompiliertes Programm Speichern
+label.decompCode=Dekompilierter Programmcode\:
+filechooser.hexdesc=Intel HEX Dateien
+dialog.err.load=Beim Laden der Datei ist ein Fehler aufgetreten!
+dialog.err.save=Beim Speichern der Datei ist ein Fehler aufgetreten!

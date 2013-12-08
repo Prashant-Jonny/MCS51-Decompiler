@@ -4,3 +4,6 @@ button.open=Open file
 label.source=Contents of the sourcefile\:
 button.save=Save decompiled program
 label.decompCode=Decompiled Code\:
+filechooser.hexdesc=Intel HEX files
+dialog.err.load=An error Occured while opening the File
+dialog.err.save=An error Occured while saving the File
